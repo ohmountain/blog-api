@@ -1,30 +1,27 @@
-extern crate serde;
-extern crate serde_json;
+extern crate mysql;
 
-#[derive(Serialize, Deserialize)]
-pub struct Type {
-    id: u32,
-    title: String,
-    sort: u8
-}
+use std::sync::Arc;
+use self::mysql::from_row;
+use self::mysql::Pool;
 
-#[derive(Serialize, Deserialize)]
-pub struct Types {
-    pub types: Vec<Type>
-}
+use super::Type;
+use super::Types;
 
+pub fn get_types(arc: Arc<Pool>) -> Types {
 
-pub fn get_types() -> Option<Types> {
-    let t1 = Type {
-        id: 1,
-        title: "我才去".into(),
-        sort: 1
-    };
+    let pool = Arc::try_unwrap(arc).unwrap_err();
 
-    let mut types = Types{ types: vec![] };
-    types.types.push(t1);
+    let mut types = Types  { types: Vec::new() };
 
-    Some(types)
+    for row in pool.prep_exec("SELECT id, title, sort FROM types", ()).unwrap() {
+        let (id, title, sort): (u32, String, u8) = from_row(row.unwrap());
 
-    // None
+        types.types.push(Type {
+            id: id,
+            title: title,
+            sort: sort
+        })
+    }
+
+    types
 }
