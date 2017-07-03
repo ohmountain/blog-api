@@ -9,6 +9,7 @@ use iron::middleware::Chain;
 use router::Router;
 use persistent::Read;
 use blog::api::read::{ get_types };
+use blog::api::write::{ post_type };
 use blog::connection::{ get_connection, MyPool };
 
 
@@ -18,6 +19,7 @@ fn main() {
 
     let mut router = Router::new();
     router.get("/api/v2/types", get_types, "get_types");
+    router.post("/api/v2/type", post_type, "post_type");
 
     let mut chain = Chain::new(router);
     chain.link(Read::<MyPool>::both(pool));

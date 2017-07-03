@@ -17,7 +17,7 @@ pub fn get_types(arc: Arc<Pool>) -> Types {
         let (id, title, sort): (u32, String, u8) = from_row(row.unwrap());
 
         types.types.push(Type {
-            id: id,
+            id: Some(id),
             title: title,
             sort: sort
         })

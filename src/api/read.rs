@@ -14,7 +14,7 @@ use super::super::connection::{ MyPool };
 use super::super::model::read::get_types as m_get_types;
 
 #[derive(Serialize, Deserialize)]
-pub struct Return {
+pub struct ReturnTypes {
     code: u16,
     types: Vec<Type>
 }
@@ -28,7 +28,7 @@ pub fn get_types(req: &mut Request) -> IronResult<Response> {
 
 
     let types = m_get_types(pool);
-    let ret   =  Return { code: 200, types: types.types };
+    let ret   = ReturnTypes { code: 200, types: types.types };
     let data  = serde_json::to_string(&ret).unwrap_or("".into());
 
     headers.set(headers::ContentLength(data.len() as u64));

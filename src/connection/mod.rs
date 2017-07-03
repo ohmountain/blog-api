@@ -12,8 +12,8 @@ use self::mysql::conn::Opts;
 use self::iron::typemap::Key;
 
 
+/// mysql 连接池的 persistent 封装
 pub struct MyPool;
-
 impl Key for MyPool { type Value = Pool; }
 
 pub fn get_connection() -> mysql::Pool {
