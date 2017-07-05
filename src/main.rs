@@ -6,6 +6,7 @@ extern crate api as blog;
 
 use iron::prelude::*;
 use iron::middleware::Chain;
+use iron::status;
 use router::Router;
 use persistent::Read;
 use blog::api::read::{ get_types };

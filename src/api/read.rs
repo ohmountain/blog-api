@@ -9,7 +9,6 @@ use self::iron::prelude::*;
 use self::iron::status;
 use self::iron::{Headers, headers};
 use self::persistent::Read;
-use self::redis::Commands;
 
 use super::super::model::{ Type, Types };
 use super::super::connection::{ MyPool };
@@ -25,43 +24,45 @@ pub struct ReturnTypes {
 
 pub fn get_types(req: &mut Request) -> IronResult<Response> {
 
-   let cached = get_redis_key(&("_cached_types".into()));
+    let cached = get_redis_key(&("_cached_types".into()));
 
-   let mut types = Types { types: Vec::new() };
-   let mut data  = String::new();
-   let mut ret   = ReturnTypes { code: 200, types: types.types };
+    let mut types = Types { types: Vec::new() };
+    let mut data  = String::new();
+    let mut ret   = ReturnTypes { code: 200, types: types.types };
 
-   match cached {
-       Some(json) => {
-           ret = serde_json::from_str(json.as_str()).unwrap();
-           data  = serde_json::to_string(&ret).unwrap_or("".into());
-       },
-       None => {
-           let pool = req.get::<Read<MyPool>>().unwrap();
-           types = m_get_types(pool);
+    match cached {
+        Some(json) => {
 
-           ret.types = types.types;
-           data  = serde_json::to_string(&ret).unwrap_or("".into());
+            // 性能不好
+            ret = serde_json::from_str(json.as_str()).unwrap();
+            data  = serde_json::to_string(&ret).unwrap_or("".into());
+        },
+        None => {
+            let pool = req.get::<Read<MyPool>>().unwrap();
+            types = m_get_types(pool);
 
-           redis_set_kv("_cached_types".into(), data.clone()).unwrap();
-       }
-   }
+            ret.types = types.types;
+            data  = serde_json::to_string(&ret).unwrap_or("".into());
 
-   let mut headers = Headers::new();
-   headers.set(headers::ContentType::json());
-   headers.set(headers::Server("MKD 1.0".into()));
+            redis_set_kv("_cached_types".into(), data.clone()).unwrap();
+        }
+    }
+
+    let mut headers = Headers::new();
+    headers.set(headers::ContentType::json());
+    headers.set(headers::Server("MKD 1.0".into()));
 
 
 
 
-   headers.set(headers::ContentLength(data.len() as u64));
+    headers.set(headers::ContentLength(data.len() as u64));
 
-   let response = Response {
-       headers: headers,
-       status: Some(status::Ok),
-       body: Some(Box::new(data)),
-       extensions: iron::typemap::TypeMap::new()
-   };
+    let response = Response {
+        headers: headers,
+        status: Some(status::Ok),
+        body: Some(Box::new(data)),
+        extensions: iron::typemap::TypeMap::new()
+    };
 
-   Ok(response)
+    Ok(response)
 }
