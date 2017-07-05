@@ -6,7 +6,6 @@ extern crate dotenv;
 use std::env;
 use std::u16;
 use std::str::FromStr;
-use std::marker::Sync;
 use self::dotenv::dotenv;
 use self::mysql::Pool;
 use self::mysql::OptsBuilder;

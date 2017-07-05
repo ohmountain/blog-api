@@ -47,14 +47,13 @@ pub fn get_types(req: &mut Request) -> IronResult<Response> {
     Ok(response)
 }
 
-pub fn cache_type(req: &mut Request) -> IronResult<Response> {
+pub fn cache_type(_: &mut Request) -> IronResult<Response> {
 
     let mut headers = Headers::new();
     headers.set(headers::ContentType::json());
     headers.set(headers::Server("MKD 1.0".into()));
 
-    let redis_conn: redis::Connection = get_redis_connection().unwrap();
-    redis_conn.set("my_key", 32);
+    redis_set("name".into(), "renshan".into()).unwrap();
 
     let data: String  = "{\"name\":\"renshan\"}".into();
 
@@ -68,4 +67,12 @@ pub fn cache_type(req: &mut Request) -> IronResult<Response> {
     };
 
     Ok(response)
+}
+
+fn redis_set(k: String, v: String) -> redis::RedisResult<()> {
+
+    let conn: redis::Connection = get_redis_connection().unwrap();
+    let _: () = try!(conn.set(k, v));
+
+    Ok(())
 }
