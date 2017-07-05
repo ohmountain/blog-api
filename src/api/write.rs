@@ -65,6 +65,7 @@ pub fn post_type(req: &mut Request) -> IronResult<Response> {
             }
 
         },
+
         _ => {
             ret.code = 400;
             ret.message = Some("require paramaters".into());
