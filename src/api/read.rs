@@ -53,7 +53,14 @@ pub fn cache_type(_: &mut Request) -> IronResult<Response> {
     headers.set(headers::ContentType::json());
     headers.set(headers::Server("MKD 1.0".into()));
 
-    redis_set("name".into(), "renshan".into()).unwrap();
+    let res = redis_set("name".into(), "renshan".into());
+
+    match res {
+        Ok(_) => res.unwrap(),
+        Err(_) => {
+            println!("Redis 连接错误");
+        }
+    }
 
     let data: String  = "{\"name\":\"renshan\"}".into();
 
@@ -71,7 +78,13 @@ pub fn cache_type(_: &mut Request) -> IronResult<Response> {
 
 fn redis_set(k: String, v: String) -> redis::RedisResult<()> {
 
-    let conn: redis::Connection = get_redis_connection().unwrap();
+    let mut conn: redis::Connection;
+
+    match get_redis_connection() {
+        Ok(connection) => conn = connection,
+        Err(_) => return Err(redis::RedisError::from((redis::ErrorKind::ResponseError, "None"))),
+    };
+
     let _: () = try!(conn.set(k, v));
 
     Ok(())
