@@ -27,8 +27,9 @@ pub fn get_types(req: &mut Request) -> IronResult<Response> {
     let cached = get_redis_key(&("_cached_types".into()));
 
     let mut types = Types { types: Vec::new() };
-    let mut data  = String::new();
     let mut ret   = ReturnTypes { code: 200, types: types.types };
+
+    let data:String;
 
     match cached {
         Some(json) => {
@@ -51,10 +52,6 @@ pub fn get_types(req: &mut Request) -> IronResult<Response> {
     let mut headers = Headers::new();
     headers.set(headers::ContentType::json());
     headers.set(headers::Server("MKD 1.0".into()));
-
-
-
-
     headers.set(headers::ContentLength(data.len() as u64));
 
     let response = Response {

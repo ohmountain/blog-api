@@ -19,6 +19,7 @@ pub struct Post {
     pub id: Option<u32>,
     pub type_id: u32,
     pub title: String,
+    pub body: String,
     pub created_at: String,
     pub updated_at: String
 }
