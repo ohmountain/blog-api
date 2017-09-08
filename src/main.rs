@@ -13,6 +13,7 @@ use blog::api::write::{ post_type, post_blog };
 use blog::connection::{ get_mysql_connection, MyPool };
 
 
+
 fn main() {
 
     let mysql_pool = get_mysql_connection();
@@ -27,3 +28,4 @@ fn main() {
 
     Iron::new(chain).http("localhost:3000").unwrap();
 }
+
