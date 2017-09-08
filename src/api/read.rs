@@ -34,9 +34,11 @@ pub fn get_types(req: &mut Request) -> IronResult<Response> {
     match cached {
         Some(json) => {
 
-            // 性能不好
-            ret = serde_json::from_str(json.as_str()).unwrap();
-            data  = serde_json::to_string(&ret).unwrap_or("".into());
+            // 性能不好(!^_^，实际上这是转回json再转回string，根本就不需要)
+            // ret = serde_json::from_str(json.as_str()).unwrap();
+            // data  = serde_json::to_string(&ret).unwrap_or("".into());
+
+            data = json;
         },
         None => {
             let pool = req.get::<Read<MyPool>>().unwrap();
