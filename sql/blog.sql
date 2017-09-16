@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `posts`;
 CREATE TABLE `posts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type_id` int(10) unsigned DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
+  `title` varchar(255) CHARSET utf8mb4 collate utf8mb4_general_ci,
   `body` text,
   `created_at` int(10) unsigned DEFAULT NULL,
   `updated_at` int(10) unsigned DEFAULT NULL,
@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS `types`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `types` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) DEFAULT NULL,
+  `title` varchar(255) CHARSET utf8mb4 collate utf8mb4_general_ci unique,
   `sort` smallint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
